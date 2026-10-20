@@ -7,7 +7,7 @@ A simple, fast, and interactive web quiz application to practice core Java progr
 ## 🌐 Live Demo
 
 Experience the application in your browser:  
-👉 [Click here to view the Live Demo](https://your-live-demo-link.com)
+👉 [Click here to view the Live Demo](https://techquiz-mastery.vercel.app/)
 
 ---
 
