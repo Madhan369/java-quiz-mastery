@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechQuiz Mastery</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <!-- Confetti Celebration Canvas -->
+    <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+    <main class="quiz-wrapper">
+        <!-- Top Navigation Bar & Theme Toggle (Scrolls naturally with content) -->
+        <header class="top-bar">
+            <div class="brand-tag">
+                <span class="brand-pulse"></span>
+                <span>TechQuiz Engine</span>
+            </div>
+            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Color Theme" title="Toggle Light / Dark Mode">
+                <span class="theme-icon sun-icon">☀️</span>
+                <span class="theme-icon moon-icon">🌙</span>
+                <span id="theme-label" class="theme-label">Dark Mode</span>
+            </button>
+        </header>
+
+        <div class="quiz-container">
+            <!-- ========================================================
+                 Start & Topic Selection Screen
+                 ======================================================== -->
+            <section id="start-screen" class="start-screen">
+                <div class="start-header">
+                    <span class="quiz-badge">
+                        <span class="badge-dot"></span>
+                        Skill Evaluator
+                    </span>
+                    <h1 class="start-title">TechQuiz <span class="gradient-text">Mastery</span></h1>
+                    <p class="start-subtitle">Select a subject and challenge length to test your knowledge.</p>
+                </div>
+
+                <!-- Topic Selector Grid -->
+                <div class="setup-group">
+                    <label class="setup-label">Choose Topic</label>
+                    <div class="topics-grid" role="radiogroup" aria-label="Quiz Topics">
+                        <div class="topic-card selected" data-topic="java-basics">
+                            <span class="topic-icon">☕</span>
+                            <div class="topic-info">
+                                <span class="topic-name">Java Basics</span>
+                                <span class="topic-desc">Syntax, data types & main method</span>
+                            </div>
+                        </div>
+
+                        <div class="topic-card" data-topic="oop-concepts">
+                            <span class="topic-icon">🧬</span>
+                            <div class="topic-info">
+                                <span class="topic-name">OOP Concepts</span>
+                                <span class="topic-desc">Classes, objects & inheritance</span>
+                            </div>
+                        </div>
+
+                        <div class="topic-card" data-topic="loops-arrays">
+                            <span class="topic-icon">🔢</span>
+                            <div class="topic-info">
+                                <span class="topic-name">Loops & Arrays</span>
+                                <span class="topic-desc">Arrays, loops & conditionals</span>
+                            </div>
+                        </div>
+
+                        <div class="topic-card" data-topic="all">
+                            <span class="topic-icon">🎯</span>
+                            <div class="topic-info">
+                                <span class="topic-name">All Java Topics</span>
+                                <span class="topic-desc">Random mix of beginner Java questions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Count Selection -->
+                <div class="setup-group">
+                    <label class="setup-label">Question Count</label>
+                    <div class="count-selector">
+                        <button type="button" class="count-pill active" data-count="5">
+                            <span class="count-num">5</span>
+                            <span class="count-tag">Quick Run</span>
+                        </button>
+                        <button type="button" class="count-pill" data-count="10">
+                            <span class="count-num">10</span>
+                            <span class="count-tag">Full Quiz</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Start Action Button -->
+                <button id="start-btn" class="btn btn-primary btn-start">
+                    <span>Start Quiz</span>
+                    <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </section>
+
+            <!-- ========================================================
+                 Quiz Active Header Section
+                 ======================================================== -->
+            <header class="quiz-header hide" id="quiz-header">
+                <div class="header-top">
+                    <span class="quiz-badge">
+                        <span class="badge-dot"></span>
+                        <span id="topic-badge-text">Java Core Quiz</span>
+                    </span>
+                    <span id="score-counter" class="score-pill">Score: 0</span>
+                </div>
+                
+                <div class="progress-section">
+                    <div class="progress-labels">
+                        <span id="question-progress">Question 1 of 5</span>
+                        <span id="progress-percent">20%</span>
+                    </div>
+                    <div class="progress-track" aria-label="Quiz Progress">
+                        <div id="progress-bar" class="progress-fill" style="width: 20%;"></div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ========================================================
+                 Question and Answers Area
+                 ======================================================== -->
+            <div id="question-container" class="hide">
+                <h2 id="question">Question text</h2>
+                <div id="answer-buttons" role="radiogroup" aria-labelledby="question"></div>
+                
+                <!-- Instant Concept Explanation Box -->
+                <div id="explanation-box" class="explanation-box hide">
+                    <div class="explanation-header">
+                        <span id="explanation-badge" class="explanation-badge">💡 Concept Explanation</span>
+                    </div>
+                    <p id="explanation-text" class="explanation-text"></p>
+                </div>
+
+                <!-- Inline Validation Error -->
+                <div id="validation-msg" class="validation-msg hide" role="alert">
+                    <span class="msg-icon">⚠️</span>
+                    <span>Please select an option before proceeding.</span>
+                </div>
+            </div>
+
+            <!-- Quiz Controls -->
+            <div class="controls-container hide" id="controls-container">
+                <button id="next-btn" class="btn btn-primary hide">
+                    <span id="btn-text">Submit Answer</span>
+                    <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- ========================================================
+                 Result Summary Card
+                 ======================================================== -->
+            <div id="result" class="result-container hide"></div>
+            
+            <!-- Post-Quiz Review Section -->
+            <div id="review-section" class="review-section hide">
+                <div class="review-header">
+                    <h3>Review Answers & Explanations</h3>
+                    <div class="filter-pills">
+                        <button class="filter-pill active" data-filter="all" id="filter-all">All</button>
+                        <button class="filter-pill" data-filter="incorrect" id="filter-incorrect">Mistakes</button>
+                        <button class="filter-pill" data-filter="correct" id="filter-correct">Correct</button>
+                    </div>
+                </div>
+                <div id="review-list" class="review-list"></div>
+            </div>
+
+            <!-- Result Screen Action Buttons -->
+            <div class="result-actions-container hide" id="result-actions">
+                <button id="review-toggle-btn" class="btn btn-secondary">
+                    <span>📖 Review Questions</span>
+                </button>
+                <button id="restart-btn" class="btn btn-secondary">
+                    <span>🔁 Play Again</span>
+                </button>
+                <button id="change-topic-btn" class="btn btn-restart">
+                    <span>⚙️ Change Topic</span>
+                </button>
+            </div>
+
+            <!-- Keyboard Navigation Helper -->
+            <footer class="keyboard-hints" id="keyboard-hints" aria-label="Keyboard Shortcuts">
+                <span class="hint-item"><kbd>1</kbd>–<kbd>4</kbd> or <kbd>A</kbd>–<kbd>D</kbd> Select</span>
+                <span class="hint-sep">•</span>
+                <span class="hint-item"><kbd>Enter ↵</kbd> Proceed</span>
+            </footer>
+        </div>
+
+        <!-- App Credit Footer -->
+        <footer class="app-credit">
+            <span>Made with ❤️ by <a href="https://madhanqa.vercel.app/" target="_blank" rel="noopener noreferrer" class="credit-link">Madhan</a></span>
+        </footer>
+    </main>
+</body>
+</html>
